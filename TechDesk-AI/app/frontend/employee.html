@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Portal | TechDesk AI</title>
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="brand-group">
+            <div class="brand-logo">TD</div>
+            <div>
+                <div class="brand-name">TechDesk AI</div>
+                <div class="brand-subtitle">Employee Service Portal</div>
+            </div>
+        </div>
+        <div class="user-nav">
+            <div class="user-pill">
+                <span id="userName">Employee</span>
+                <span id="userDept" class="role-tag" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">General</span>
+                <span id="userRole" class="role-tag">EMPLOYEE</span>
+            </div>
+            <div style="position: relative;">
+                <button class="btn btn-secondary" onclick="document.getElementById('notifDropdown').classList.toggle('active')" style="padding: 8px 12px; font-size: 13px;">
+                    🔔 <span id="notifCount" style="display:none; background: #ef4444; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px;">0</span>
+                </button>
+                <div id="notifDropdown" class="glass-card" style="display: none; position: absolute; right: 0; top: 45px; width: 320px; max-height: 400px; overflow-y: auto; padding: 12px; z-index: 200;">
+                    <div style="font-weight: 700; font-size: 13px; margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 6px;">Notifications</div>
+                    <div id="notifList"></div>
+                </div>
+            </div>
+            <button class="btn btn-secondary" onclick="logout()" style="padding: 8px 14px; font-size: 13px;">Sign Out</button>
+        </div>
+    </header>
+
+    <main class="dashboard-layout">
+        <!-- Quick Guidance Strip -->
+        <div class="stats-row" style="margin-bottom: 20px;">
+            <div class="stat-card" style="cursor: pointer;" onclick="document.getElementById('askInput').value='How do I connect to the corporate VPN?'; document.getElementById('askForm').dispatchEvent(new Event('submit'));">
+                <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">🛡️</div>
+                <div>
+                    <div class="stat-label">Quick Guide</div>
+                    <div style="font-weight: 700; font-size: 14px;">Connect to VPN</div>
+                </div>
+            </div>
+            <div class="stat-card" style="cursor: pointer;" onclick="document.getElementById('askInput').value='How do I connect to the office Wi-Fi?'; document.getElementById('askForm').dispatchEvent(new Event('submit'));">
+                <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">📶</div>
+                <div>
+                    <div class="stat-label">Quick Guide</div>
+                    <div style="font-weight: 700; font-size: 14px;">Office Wi-Fi</div>
+                </div>
+            </div>
+            <div class="stat-card" style="cursor: pointer;" onclick="document.getElementById('askInput').value='My laptop screen is broken and flickering'; document.getElementById('askForm').dispatchEvent(new Event('submit'));">
+                <div class="stat-icon" style="background: rgba(249, 115, 22, 0.15); color: #fb923c;">💻</div>
+                <div>
+                    <div class="stat-label">Auto-Triage</div>
+                    <div style="font-weight: 700; font-size: 14px;">Hardware Problem</div>
+                </div>
+            </div>
+            <div class="stat-card" style="cursor: pointer;" onclick="document.getElementById('askInput').value='How do I reset my password and configure MFA?'; document.getElementById('askForm').dispatchEvent(new Event('submit'));">
+                <div class="stat-icon" style="background: rgba(168, 85, 247, 0.15); color: #c084fc;">🔑</div>
+                <div>
+                    <div class="stat-label">Security Info</div>
+                    <div style="font-weight: 700; font-size: 14px;">Password & 2FA</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dash-grid-2">
+            <!-- Left: AI Chat Assistant -->
+            <section class="chat-container">
+                <div class="chat-header">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981;"></span>
+                        <strong>TechDesk AI Assistant</strong>
+                    </div>
+                    <span style="font-size: 11px; color: var(--text-dim);">Multi-Agent RAG Online</span>
+                </div>
+
+                <div id="chatMessages" class="chat-messages">
+                    <div class="chat-bubble bot">
+                        Hello! I am your <strong>TechDesk AI</strong> IT assistant. You can ask me technical questions about company VPN, Wi-Fi, password reset, or hardware.
+                        If you have an urgent problem or outage, describe it and I will automatically open an IT support ticket with priority classification.
+                    </div>
+                </div>
+
+                <form id="askForm" class="chat-input-row">
+                    <input type="text" id="askInput" placeholder="Describe your issue or ask an IT question..." required autocomplete="off">
+                    <button type="submit" class="btn btn-primary">Send &rarr;</button>
+                </form>
+            </section>
+
+            <!-- Right: My Support Tickets -->
+            <section class="glass-card" style="padding: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <div>
+                        <h3 style="font-size: 17px; font-weight: 800;">My Support Tickets</h3>
+                        <p style="font-size: 12px; color: var(--text-muted);">Real-time tracking and specialist resolutions</p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="loadTickets()" style="padding: 6px 12px; font-size: 12px;">Refresh</button>
+                </div>
+
+                <div class="table-responsive" style="max-height: 520px; overflow-y: auto;">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Ticket ID</th>
+                                <th>Issue</th>
+                                <th>Priority</th>
+                                <th>Team</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ticketsBody">
+                            <tr><td colspan="6" style="text-align:center; padding: 20px; color: var(--text-dim);">Loading tickets...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Rating Modal -->
+    <div id="rateModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="margin-bottom: 8px;">Rate Ticket Resolution</h3>
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">
+                How satisfied are you with the IT resolution for ticket <span id="rateTicketIdText" style="color: var(--primary); font-weight: 700;"></span>?
+            </p>
+            <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 24px;">
+                <button class="btn btn-secondary" onclick="submitRating(1)">⭐ 1 - Poor</button>
+                <button class="btn btn-secondary" onclick="submitRating(3)">⭐ 3 - Good</button>
+                <button class="btn btn-primary" onclick="submitRating(5)">⭐ 5 - Excellent</button>
+            </div>
+            <div style="text-align: right;">
+                <button class="btn btn-secondary" onclick="closeRateModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ticket Detail Modal -->
+    <div id="detailModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="margin-bottom: 12px;">Ticket Overview</h3>
+            <div id="detailModalContent" style="font-size: 13px; line-height: 1.6; margin-bottom: 20px;"></div>
+            <div style="text-align: right;">
+                <button class="btn btn-secondary" onclick="closeDetailModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        #notifDropdown.active { display: block !important; }
+    </style>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/employee.js"></script>
+</body>
+</html>

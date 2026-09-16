@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | TechDesk AI</title>
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <style>
+        .auth-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .auth-card {
+            width: 100%;
+            max-width: 440px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        .auth-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .auth-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .auth-header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+        .auth-header p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        .role-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .alert-box {
+            display: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+        .alert-box.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-brand">
+                    <div class="brand-logo">TD</div>
+                    <div class="brand-name">TechDesk AI</div>
+                </div>
+                <h1>Enterprise IT Portal</h1>
+                <p>Sign in to access AI IT support, ticket queues, or ops</p>
+            </div>
+
+            <div class="role-indicators">
+                <span class="role-tag">Employee</span>
+                <span class="role-tag" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">IT Specialist</span>
+                <span class="role-tag" style="background: rgba(249, 115, 22, 0.2); color: #fb923c;">Admin</span>
+            </div>
+
+            <div id="alertBox" class="alert-box"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Corporate Email</label>
+                    <input type="email" id="email" class="form-control" placeholder="username@company.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter password" required>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 18px;">
+                    <a href="/forgot-password" style="color: var(--primary); font-size: 12px; text-decoration: none;">Forgot password?</a>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%; padding: 12px;">Sign In to TechDesk &rarr;</button>
+            </form>
+
+            <div style="text-align: center; margin-top: 24px; font-size: 13px; color: var(--text-muted);">
+                Need an account? <a href="/register" style="color: var(--primary); text-decoration: none; font-weight: 600;">Register new profile</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if already logged in
+        fetch("/auth/me", { credentials: "include" })
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.dashboard) {
+                    window.location.replace(data.dashboard);
+                }
+            })
+            .catch(() => {});
+
+        const loginForm = document.getElementById("loginForm");
+        const alertBox = document.getElementById("alertBox");
+        const submitBtn = document.getElementById("submitBtn");
+
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            alertBox.className = "alert-box";
+            alertBox.style.display = "none";
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Authenticating...";
+
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+
+            try {
+                const res = await fetch("/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    alertBox.textContent = data.detail || "Authentication failed.";
+                    alertBox.className = "alert-box error";
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "Sign In to TechDesk \u2192";
+                    return;
+                }
+
+                window.location.replace(data.dashboard);
+            } catch (err) {
+                alertBox.textContent = "Network error. Please try again.";
+                alertBox.className = "alert-box error";
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Sign In to TechDesk \u2192";
+            }
+        });
+    </script>
+</body>
+</html>

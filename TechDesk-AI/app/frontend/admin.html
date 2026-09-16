@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal | TechDesk AI</title>
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="brand-group">
+            <div class="brand-logo" style="background: linear-gradient(135deg, #f97316, #ef4444);">AD</div>
+            <div>
+                <div class="brand-name">TechDesk AI</div>
+                <div class="brand-subtitle">IT Operations & Admin Console</div>
+            </div>
+        </div>
+        <div class="user-nav">
+            <div class="user-pill">
+                <span id="userName">Administrator</span>
+                <span id="userRole" class="role-tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">ADMIN</span>
+            </div>
+            <button class="btn btn-secondary" onclick="logout()" style="padding: 8px 14px; font-size: 13px;">Sign Out</button>
+        </div>
+    </header>
+
+    <main class="dashboard-layout">
+        <!-- Analytics & Stats Strip -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">🎫</div>
+                <div>
+                    <div id="statTotalTickets" class="stat-val">0</div>
+                    <div class="stat-label">Total Tickets</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">✅</div>
+                <div>
+                    <div id="statResolvedTickets" class="stat-val">0</div>
+                    <div class="stat-label">Resolved Tickets</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(239, 68, 68, 0.15); color: #f87171;">🚨</div>
+                <div>
+                    <div id="statCriticalTickets" class="stat-val">0</div>
+                    <div class="stat-label">Critical Incidents</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(168, 85, 247, 0.15); color: #c084fc;">👥</div>
+                <div>
+                    <div id="statTotalUsers" class="stat-val">0</div>
+                    <div class="stat-label">Registered Accounts</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">💬</div>
+                <div>
+                    <div id="statTotalChats" class="stat-val">0</div>
+                    <div class="stat-label">AI Chats Handled</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(14, 165, 233, 0.15); color: #38bdf8;">📚</div>
+                <div>
+                    <div id="statArticles" class="stat-val">0</div>
+                    <div class="stat-label">Verified KB Articles</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Oversight: Tickets & KB Promotion -->
+        <section class="glass-card" style="margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div>
+                    <h2 style="font-size: 18px; font-weight: 800;">Enterprise Incident & Resolution Oversight</h2>
+                    <p style="font-size: 12px; color: var(--text-muted);">
+                        Review specialist resolutions and approve them into the verified permanent knowledge base.
+                    </p>
+                </div>
+                <button class="btn btn-secondary" onclick="loadAllTickets(); loadStats();" style="padding: 6px 14px; font-size: 12px;">Refresh</button>
+            </div>
+
+            <div class="table-responsive" style="max-height: 480px; overflow-y: auto;">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Ticket ID</th>
+                            <th>Inquiry & Submitter</th>
+                            <th>Priority</th>
+                            <th>Team</th>
+                            <th>Status</th>
+                            <th>Latest Specialist Reply</th>
+                            <th>Knowledge Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTicketsBody">
+                        <tr><td colspan="7" style="text-align:center; padding: 20px; color: var(--text-dim);">Loading incident history...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- User Accounts Management -->
+        <section class="glass-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div>
+                    <h2 style="font-size: 18px; font-weight: 800;">User Account Management</h2>
+                    <p style="font-size: 12px; color: var(--text-muted);">Manage employees, IT specialists, and administrative credentials</p>
+                </div>
+                <button class="btn btn-secondary" onclick="loadAllUsers()" style="padding: 6px 14px; font-size: 12px;">Refresh</button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Full Name</th>
+                            <th>Email Address</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th>Created At</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminUsersBody">
+                        <tr><td colspan="7" style="text-align:center; padding: 20px; color: var(--text-dim);">Loading user records...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+TECHDESK AI - ENTERPRISE IT & WORKPLACE KNOWLEDGE BASE
+
+============================================================
+1. VIRTUAL PRIVATE NETWORK (VPN) & REMOTE ACCESS
+============================================================
+Question: How do I connect to the corporate VPN?
+Answer: Download and install the GlobalProtect VPN client from the internal IT portal (https://portal.techdesk.internal). Open GlobalProtect, enter the portal address "vpn.techdesk.internal", authenticate with your corporate SSO credentials, and approve the 2FA push on your Microsoft Authenticator app. Once connected, the shield icon turns blue.
+
+Question: What should I do if the VPN fails to connect or shows gateway error?
+Answer: Disconnect and reconnect your local Wi-Fi. Restart the GlobalProtect agent by right-clicking the tray icon and selecting "Refresh Connection". If the issue persists, ensure your corporate password hasn't expired and clear your DNS cache by running "ipconfig /flushdns" in PowerShell. If still unreachable, submit an Infrastructure ticket.
+
+============================================================
+2. WI-FI & OFFICE NETWORK CONNECTIVITY
+============================================================
+Question: How do I connect to the office Wi-Fi network?
+Answer: Select "TechDesk-Secure" from your device's Wi-Fi list. In the authentication prompt, enter your corporate email address as the username and your domain password. Accept the security certificate when prompted. Guest visitors can connect to "TechDesk-Guest" and obtain a temporary 8-hour access pass from the reception desk.
+
+Question: How do I map a network shared drive on Windows or Mac?
+Answer: On Windows, open File Explorer, right-click "This PC", select "Map network drive", choose drive letter Z:, and enter folder path "\\storage.techdesk.internal\Shared". On macOS, open Finder, press Cmd+K, and enter "smb://storage.techdesk.internal/Shared". Use your corporate username and password.
+
+============================================================
+3. MULTI-FACTOR AUTHENTICATION (MFA) & PASSWORD RESET
+============================================================
+Question: How do I reset my account password?
+Answer: Navigate to the self-service password reset portal (https://id.techdesk.internal/reset). Verify your identity using your backup mobile number or secondary email, then set a new password that is at least 14 characters long and contains uppercase letters, numbers, and special symbols.
+
+Question: How do I set up or transfer my 2FA Authenticator to a new phone?
+Answer: If you have your old phone, log in to https://myaccount.techdesk.internal/security, select "Security Info", click "Add sign-in method", choose Authenticator App, and scan the QR code with your new device. If you lost your previous phone, submit a High Priority ticket to SecOps to initiate an MFA reset after identity verification.
+
+============================================================
+4. HARDWARE, LAPTOPS & PERIPHERALS
+============================================================
+Question: What is the procedure for requesting a replacement laptop or hardware repair?
+Answer: If your laptop has physical damage, battery swelling, or screen failure, submit a Workplace Hardware ticket including your device Serial Number (found on the bottom chassis) and asset tag. The IT hardware team will dispatch a loaner laptop or schedule an on-site swap at the IT Helpdesk Bay in Building B, Room 204.
+
+Question: How do I request additional monitors, docking stations, or accessories?
+Answer: Standard accessory packages (27-inch monitor, USB-C docking station, keyboard, and ergonomic mouse) can be requested through the TechDesk portal with manager approval. Once approved, peripherals are shipped within 2-3 business days.
+
+============================================================
+5. SOFTWARE LICENSES & CLOUD APPLICATIONS
+============================================================
+Question: How do I request software licenses like Docker, Zoom Pro, or JetBrains?
+Answer: Standard software (Slack, Google Chrome, Zoom Basic, VS Code, Microsoft 365) can be self-installed via the Company Portal application without admin credentials. Paid licenses (Docker Desktop, JetBrains All Products Pack, Adobe Creative Cloud) require departmental budget code approval before an automated license is assigned to your corporate email.
+
+Question: What should I do if Microsoft Outlook or Teams is not syncing?
+Answer: Log out of Microsoft 365 apps, close all Office processes, reopen Outlook in safe mode ("outlook.exe /safe"), and verify your network connection. If folders fail to update, go to Account Settings and click "Update Folder" or re-authenticate your Microsoft SSO session.
+
+============================================================
+6. IT SECURITY POLICIES & INCIDENT RESPONSE
+============================================================
+Question: How do I report a suspected phishing email?
+Answer: Do not click any links or download attachments. Click the "Report Phishing" fish-hook button in the Outlook toolbar. This automatically quarantines the email and forwards header metadata to the Security Operations Center (SecOps) for threat triage.
+
+Question: What should I do if my laptop is lost or stolen?
+Answer: Immediately call the 24/7 IT Emergency Hotline (+1-800-555-TECH) or notify secops@techdesk.internal so the SecOps team can issue a remote lock and cryptographic wipe command via MDM. Then file an incident report with local security.

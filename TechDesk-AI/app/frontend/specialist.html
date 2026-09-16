@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Specialist Portal | TechDesk AI</title>
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="brand-group">
+            <div class="brand-logo">TD</div>
+            <div>
+                <div class="brand-name">TechDesk AI</div>
+                <div class="brand-subtitle">IT Specialist Support Bay</div>
+            </div>
+        </div>
+        <div class="user-nav">
+            <div class="user-pill">
+                <span id="userName">IT Specialist</span>
+                <span id="userDept" class="role-tag" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">IT Ops</span>
+                <span id="userRole" class="role-tag" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">SPECIALIST</span>
+            </div>
+            <button class="btn btn-secondary" onclick="logout()" style="padding: 8px 14px; font-size: 13px;">Sign Out</button>
+        </div>
+    </header>
+
+    <main class="dashboard-layout">
+        <!-- Ticket Queue Section -->
+        <section class="glass-card" style="margin-bottom: 24px;">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px;">
+                <div>
+                    <h2 style="font-size: 20px; font-weight: 800;">IT Ticket Incident Queue</h2>
+                    <p style="font-size: 13px; color: var(--text-muted);">Manage employee inquiries, investigate incidents, and dispatch solutions</p>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <select id="deptFilter" class="form-control" style="width: auto; padding: 8px 12px; font-size: 12px;">
+                        <option value="All">All Departments</option>
+                        <option value="Infrastructure & Network">Infrastructure & Network</option>
+                        <option value="Workplace Hardware Support">Workplace Hardware Support</option>
+                        <option value="SecOps & Access Control">SecOps & Access Control</option>
+                        <option value="Cloud & Software Licensing">Cloud & Software Licensing</option>
+                        <option value="General IT Helpdesk">General IT Helpdesk</option>
+                    </select>
+                    <select id="statusFilter" class="form-control" style="width: auto; padding: 8px 12px; font-size: 12px;">
+                        <option value="all">All Statuses</option>
+                        <option value="open">Open</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="resolved">Resolved</option>
+                    </select>
+                    <button class="btn btn-secondary" onclick="loadTickets()" style="padding: 8px 14px; font-size: 12px;">Refresh</button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Ticket ID</th>
+                            <th>Inquiry & Submitter</th>
+                            <th>Priority</th>
+                            <th>Assigned Team</th>
+                            <th>Status</th>
+                            <th>Latest Response</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="specialistTicketsBody">
+                        <tr><td colspan="7" style="text-align:center; padding: 24px; color: var(--text-dim);">Loading ticket queue...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Knowledge Base Management Section -->
+        <div class="dash-grid-2">
+            <section class="glass-card">
+                <h3 style="font-size: 17px; font-weight: 800; margin-bottom: 6px;">Publish IT Knowledge Article</h3>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 18px;">
+                    Answers published here immediately teach the TechDesk AI agent to answer future questions automatically.
+                </p>
+                <form id="knowledgeForm">
+                    <div class="form-group">
+                        <label for="kCategory">IT Category</label>
+                        <select id="kCategory" class="form-control">
+                            <option value="network_vpn">Network & VPN</option>
+                            <option value="hardware">Workplace Hardware</option>
+                            <option value="access_security">Security & 2FA</option>
+                            <option value="software">Software & Licenses</option>
+                            <option value="general">General Operations</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="kTitle">Article Title / Question</label>
+                        <input type="text" id="kTitle" class="form-control" placeholder="e.g. How to connect to VPN from macOS" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="kContent">Detailed Solution / Answer</label>
+                        <textarea id="kContent" class="form-control" placeholder="Step-by-step instructions for employees..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Publish to AI Knowledge Base &rarr;</button>
+                </form>
+            </section>
+
+            <section class="glass-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 style="font-size: 17px; font-weight: 800;">Published Knowledge Articles</h3>
+                    <button class="btn btn-secondary" onclick="loadKnowledge()" style="padding: 4px 10px; font-size: 11px;">Refresh</button>
+                </div>
+                <div class="table-responsive" style="max-height: 380px; overflow-y: auto;">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Content</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="knowledgeBody">
+                            <tr><td colspan="4" style="text-align:center; padding: 20px; color: var(--text-dim);">Loading articles...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Reply Modal -->
+    <div id="replyModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="margin-bottom: 6px;">Respond to Ticket: <span id="modalTicketId" style="color: var(--primary);"></span></h3>
+            <p id="modalQuestion" style="font-size: 13px; color: var(--text-muted); background: rgba(0,0,0,0.25); padding: 10px; border-radius: 8px; margin-bottom: 16px;"></p>
+
+            <form id="replyForm">
+                <div class="form-group">
+                    <label for="replyText">Specialist Resolution / Notes</label>
+                    <textarea id="replyText" class="form-control" style="min-height: 120px;" placeholder="Type resolution or guidance for employee..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="replyStatus">Update Ticket Status</label>
+                    <select id="replyStatus" class="form-control">
+                        <option value="resolved">Resolved (Close & notify employee)</option>
+                        <option value="in_progress">In Progress (Investigating / waiting for parts)</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeReplyModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Response &rarr;</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/specialist.js"></script>
+</body>
+</html>

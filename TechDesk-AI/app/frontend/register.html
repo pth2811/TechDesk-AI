@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | TechDesk AI</title>
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <style>
+        .auth-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .auth-card {
+            width: 100%;
+            max-width: 480px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+        }
+        .auth-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .auth-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .alert-box {
+            display: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+        .alert-box.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-brand">
+                    <div class="brand-logo">TD</div>
+                    <div class="brand-name">TechDesk AI</div>
+                </div>
+                <h2>Create Account</h2>
+                <p style="font-size: 13px; color: var(--text-muted);">Register to access the IT help desk and service agents</p>
+            </div>
+
+            <div id="alertBox" class="alert-box"></div>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" class="form-control" placeholder="e.g. Parth Sharma" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Corporate Email</label>
+                    <input type="email" id="email" class="form-control" placeholder="username@company.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="At least 6 characters" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="role">Account Role</label>
+                    <select id="role" class="form-control" onchange="toggleAccessCode()">
+                        <option value="employee">Employee (General Staff)</option>
+                        <option value="specialist">IT Specialist (Technical Support)</option>
+                        <option value="admin">System Administrator (IT Ops)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="department">Department</label>
+                    <select id="department" class="form-control">
+                        <option value="Engineering">Engineering & Development</option>
+                        <option value="Operations">Operations</option>
+                        <option value="HR">Human Resources</option>
+                        <option value="Finance">Finance & Accounting</option>
+                        <option value="Marketing">Marketing & Sales</option>
+                        <option value="SecOps">Security Operations</option>
+                        <option value="General">General</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="accessCodeGroup" style="display: none;">
+                    <label for="accessCode">Staff Access Code</label>
+                    <input type="password" id="accessCode" class="form-control" placeholder="Enter role access code (e.g. TECH2026 / ADMIN2026)">
+                    <small style="color: var(--text-dim); font-size: 11px;">Required for IT Specialist or Admin registration.</small>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 8px;">Create Profile &rarr;</button>
+            </form>
+
+            <div style="text-align: center; margin-top: 24px; font-size: 13px; color: var(--text-muted);">
+                Already registered? <a href="/" style="color: var(--primary); text-decoration: none; font-weight: 600;">Sign in here</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleAccessCode() {
+            const role = document.getElementById("role").value;
+            const group = document.getElementById("accessCodeGroup");
+            group.style.display = (role === "specialist" || role === "admin") ? "block" : "none";
+        }
+
+        const registerForm = document.getElementById("registerForm");
+        const alertBox = document.getElementById("alertBox");
+        const submitBtn = document.getElementById("submitBtn");
+
+        registerForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            alertBox.className = "alert-box";
+            alertBox.style.display = "none";
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Creating profile...";
+
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const role = document.getElementById("role").value;
+            const department = document.getElementById("department").value;
+            const access_code = document.getElementById("accessCode").value;
+
+            try {
+                const res = await fetch("/auth/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({ name, email, password, role, department, access_code })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    alertBox.textContent = data.detail || "Registration failed.";
+                    alertBox.className = "alert-box error";
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "Create Profile \u2192";
+                    return;
+                }
+
+                window.location.replace(data.dashboard);
+            } catch (err) {
+                alertBox.textContent = "Network error. Please try again.";
+                alertBox.className = "alert-box error";
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Create Profile \u2192";
+            }
+        });
+    </script>
+</body>
+</html>
